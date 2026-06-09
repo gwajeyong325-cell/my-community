@@ -7,7 +7,9 @@ import {
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlined';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
@@ -40,6 +42,8 @@ export default function HomePage() {
   const [playlists, setPlaylists] = useState(MOCK_PLAYLISTS);
   const [selectedMood, setSelectedMood] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [heroLiked, setHeroLiked] = useState(false);
+  const [heroSaved, setHeroSaved] = useState(false);
 
   useEffect(() => {
     async function fetchPlaylists() {
@@ -94,9 +98,52 @@ export default function HomePage() {
             <Button variant="contained" startIcon={<PlayArrowIcon />} onClick={() => navigate(`/playlist/${FEATURED.id}`)}>
               지금 듣기
             </Button>
-            <Button variant="outlined" startIcon={<BookmarkIcon />}>저장</Button>
-            <Button variant="outlined" startIcon={<FavoriteIcon />} sx={{ borderColor: 'rgba(255,255,255,0.2)', color: 'white' }}>
-              좋아요 {FEATURED.likes_count}
+
+            {/* 저장 버튼 */}
+            <Button
+              onClick={() => setHeroSaved(v => !v)}
+              startIcon={heroSaved ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+              sx={{
+                transition: 'all 0.15s ease',
+                // 기본(비활성)
+                borderRadius: '12px',
+                border: `1px solid ${heroSaved ? '#00E5CC' : 'rgba(255,255,255,0.25)'}`,
+                color: heroSaved ? '#00E5CC' : 'rgba(255,255,255,0.75)',
+                background: heroSaved ? 'rgba(0,229,204,0.15)' : 'transparent',
+                fontWeight: heroSaved ? 700 : 400,
+                // hover
+                '&:hover': {
+                  border: '1px solid #00E5CC',
+                  color: '#00E5CC',
+                  background: 'rgba(0,229,204,0.1)',
+                },
+                // 클릭
+                '&:active': { transform: 'scale(0.95)' },
+              }}
+            >
+              저장{heroSaved ? '됨' : ''}
+            </Button>
+
+            {/* 좋아요 버튼 */}
+            <Button
+              onClick={() => setHeroLiked(v => !v)}
+              startIcon={heroLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+              sx={{
+                transition: 'all 0.15s ease',
+                borderRadius: '12px',
+                border: `1px solid ${heroLiked ? '#FF5252' : 'rgba(255,255,255,0.25)'}`,
+                color: heroLiked ? '#FF5252' : 'rgba(255,255,255,0.75)',
+                background: heroLiked ? 'rgba(255,82,82,0.15)' : 'transparent',
+                fontWeight: heroLiked ? 700 : 400,
+                '&:hover': {
+                  border: '1px solid #FF5252',
+                  color: '#FF5252',
+                  background: 'rgba(255,82,82,0.1)',
+                },
+                '&:active': { transform: 'scale(0.95)' },
+              }}
+            >
+              좋아요 {FEATURED.likes_count + (heroLiked ? 1 : 0)}
             </Button>
           </Box>
         </Box>
