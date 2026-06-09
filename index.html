@@ -5,6 +5,23 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>sharemood — 음악 취향을 공유하다</title>
+    <script>
+      // GitHub Pages SPA 리다이렉트 복원
+      (function () {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+        // ?p= 파라미터 방식 복원
+        var search = window.location.search;
+        if (search.indexOf('?p=') !== -1) {
+          var path = decodeURIComponent(search.slice(3).replace(/&h=.*$/, ''));
+          var hash = search.indexOf('&h=') !== -1 ? '#' + decodeURIComponent(search.replace(/.*&h=/, '')) : '';
+          window.history.replaceState(null, null, '/my-community' + path + hash);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
