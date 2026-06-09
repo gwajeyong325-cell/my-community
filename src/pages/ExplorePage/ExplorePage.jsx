@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Box, Typography, Chip, Grid, TextField, InputAdornment, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { supabase } from '../../lib/supabase';
@@ -19,11 +20,18 @@ const MOCK = [
 ];
 
 export default function ExplorePage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedMood, setSelectedMood] = useState('전체');
   const [selectedGenre, setSelectedGenre] = useState('전체');
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(() => searchParams.get('q') || '');
   const [playlists, setPlaylists] = useState(MOCK);
   const [loading, setLoading] = useState(false);
+
+  // NavBar에서 넘어올 때 q 파라미터 반영
+  useEffect(() => {
+    const q = searchParams.get('q') || '';
+    setSearch(q);
+  }, [searchParams]);
 
   useEffect(() => {
     async function fetchPlaylists() {
@@ -56,11 +64,23 @@ export default function ExplorePage() {
         <TextField
           placeholder="플레이리스트, 아티스트, 무드 검색..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            if (e.target.value) {
+              setSearchParams({ q: e.target.value });
+            } else {
+              setSearchParams({});
+            }
+          }}
           fullWidth
+          autoFocus={!!searchParams.get('q')}
           sx={{ mb: 4, maxWidth: 600 }}
           InputProps={{
-            startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: 'rgba(255,255,255,0.4)' }} /></InputAdornment>,
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ color: search ? '#00E5CC' : 'rgba(255,255,255,0.4)', transition: 'color 0.2s' }} />
+              </InputAdornment>
+            ),
           }}
         />
 

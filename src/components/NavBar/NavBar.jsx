@@ -29,6 +29,14 @@ export default function NavBar() {
   const { user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchFocus, setSearchFocus] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+
+  const handleSearch = () => {
+    const q = searchValue.trim();
+    if (!q) return;
+    navigate(`/explore?q=${encodeURIComponent(q)}`);
+    setSearchValue('');
+  };
 
   const hiddenPaths = ['/login', '/register'];
   if (hiddenPaths.some(p => location.pathname.startsWith(p))) return null;
@@ -90,9 +98,15 @@ export default function NavBar() {
             transition: 'all 0.2s',
           }}
         >
-          <SearchIcon sx={{ color: 'rgba(255,255,255,0.4)', fontSize: '1.1rem', mr: 1 }} />
+          <SearchIcon
+            onClick={handleSearch}
+            sx={{ color: searchValue ? '#00E5CC' : 'rgba(255,255,255,0.4)', fontSize: '1.1rem', mr: 1, cursor: 'pointer', transition: 'color 0.2s' }}
+          />
           <InputBase
             placeholder="플레이리스트, 아티스트, 무드 검색..."
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             onFocus={() => setSearchFocus(true)}
             onBlur={() => setSearchFocus(false)}
             sx={{ color: 'white', fontSize: '0.9rem', flex: 1 }}
