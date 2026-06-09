@@ -7,7 +7,7 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 
-function ActionButton({ active, onClick, activeColor, children, count }) {
+function ActionButton({ active, onClick, activeColor, icon, activeIcon, count }) {
   return (
     <Box
       onClick={(e) => { e.stopPropagation(); onClick(); }}
@@ -20,22 +20,47 @@ function ActionButton({ active, onClick, activeColor, children, count }) {
         borderRadius: '8px',
         cursor: 'pointer',
         userSelect: 'none',
-        transition: 'all 0.18s ease',
-        background: active ? `${activeColor}22` : 'transparent',
-        border: `1px solid ${active ? activeColor : 'rgba(255,255,255,0.1)'}`,
+        transition: 'all 0.15s ease',
+
+        // 기본 상태
+        background: active ? `${activeColor}20` : 'transparent',
+        border: `1px solid ${active ? activeColor : 'rgba(255,255,255,0.12)'}`,
+
+        // 아이콘 · 숫자 색
+        color: active ? activeColor : 'rgba(255,255,255,0.35)',
+
+        // hover: 누르면 어떻게 될지 미리 보여줌
         '&:hover': {
-          background: active ? `${activeColor}33` : 'rgba(255,255,255,0.06)',
-          border: `1px solid ${active ? activeColor : 'rgba(255,255,255,0.2)'}`,
+          background: active ? `${activeColor}30` : `${activeColor}12`,
+          border: `1px solid ${active ? activeColor : `${activeColor}60`}`,
+          color: activeColor,
+          '& .action-count': {
+            color: activeColor,
+          },
         },
-        '&:active': { transform: 'scale(0.93)' },
+
+        // 클릭 피드백
+        '&:active': {
+          transform: 'scale(0.9)',
+        },
       }}
     >
-      <Box sx={{ color: active ? activeColor : 'rgba(255,255,255,0.35)', display: 'flex', alignItems: 'center', fontSize: '0.95rem' }}>
-        {children}
+      {/* 아이콘: 선택 전 아웃라인 → hover/선택 후 채움 */}
+      <Box sx={{ display: 'flex', alignItems: 'center', fontSize: '0.95rem' }}>
+        {active ? activeIcon : icon}
       </Box>
+
+      {/* 숫자 */}
       <Typography
+        className="action-count"
         variant="caption"
-        sx={{ fontWeight: active ? 700 : 400, color: active ? activeColor : 'rgba(255,255,255,0.4)', lineHeight: 1, fontSize: '0.72rem' }}
+        sx={{
+          lineHeight: 1,
+          fontSize: '0.72rem',
+          fontWeight: active ? 700 : 400,
+          color: active ? activeColor : 'rgba(255,255,255,0.4)',
+          transition: 'color 0.15s ease',
+        }}
       >
         {count}
       </Typography>
@@ -114,22 +139,17 @@ function PlaylistCard({ playlist, compact = false }) {
             activeColor="#FF5252"
             onClick={() => setLiked(v => !v)}
             count={(playlist.likes_count || 0) + (liked ? 1 : 0)}
-          >
-            {liked
-              ? <FavoriteIcon sx={{ fontSize: '0.95rem' }} />
-              : <FavoriteBorderIcon sx={{ fontSize: '0.95rem' }} />}
-          </ActionButton>
-
+            icon={<FavoriteBorderIcon sx={{ fontSize: '0.95rem' }} />}
+            activeIcon={<FavoriteIcon sx={{ fontSize: '0.95rem' }} />}
+          />
           <ActionButton
             active={saved}
             activeColor="#00E5CC"
             onClick={() => setSaved(v => !v)}
             count={(playlist.saves_count || 0) + (saved ? 1 : 0)}
-          >
-            {saved
-              ? <BookmarkIcon sx={{ fontSize: '0.95rem' }} />
-              : <BookmarkBorderIcon sx={{ fontSize: '0.95rem' }} />}
-          </ActionButton>
+            icon={<BookmarkBorderIcon sx={{ fontSize: '0.95rem' }} />}
+            activeIcon={<BookmarkIcon sx={{ fontSize: '0.95rem' }} />}
+          />
         </Box>
       </Box>
     </Box>
