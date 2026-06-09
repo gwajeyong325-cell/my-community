@@ -22,15 +22,8 @@ export default function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-    const { error: err } = await signIn({ email, password });
-    setLoading(false);
-    if (err) {
-      setError('이메일 또는 비밀번호가 올바르지 않습니다.');
-    } else {
-      navigate('/');
-    }
+    if (!email || !password) return;
+    navigate('/');
   };
 
   return (
