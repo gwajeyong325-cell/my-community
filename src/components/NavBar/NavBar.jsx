@@ -13,6 +13,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import LogoutIcon from '@mui/icons-material/Logout';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useAuth } from '../../hooks/useAuth';
 
 const navLinks = [
@@ -24,7 +26,7 @@ const navLinks = [
 export default function NavBar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchFocus, setSearchFocus] = useState(false);
 
@@ -103,6 +105,25 @@ export default function NavBar() {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {user ? (
             <>
+              {/* 로그인 상태 표시 */}
+              <Box
+                sx={{
+                  display: { xs: 'none', sm: 'flex' },
+                  alignItems: 'center',
+                  gap: 0.8,
+                  px: 1.5,
+                  py: 0.5,
+                  borderRadius: '20px',
+                  background: 'rgba(0,229,204,0.1)',
+                  border: '1px solid rgba(0,229,204,0.3)',
+                }}
+              >
+                <CheckCircleIcon sx={{ color: '#00E5CC', fontSize: '1rem' }} />
+                <Typography variant="caption" sx={{ color: '#00E5CC', fontWeight: 600 }}>
+                  {user.nickname || user.email?.split('@')[0] || '로그인됨'}
+                </Typography>
+              </Box>
+
               <IconButton
                 onClick={() => navigate('/create')}
                 sx={{
@@ -123,6 +144,22 @@ export default function NavBar() {
                 onClick={() => navigate('/profile')}
                 sx={{ width: 36, height: 36, cursor: 'pointer', border: '2px solid rgba(0,229,204,0.5)' }}
               />
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<LogoutIcon />}
+                onClick={() => { logout(); navigate('/'); }}
+                sx={{
+                  display: { xs: 'none', sm: 'flex' },
+                  borderColor: 'rgba(255,255,255,0.15)',
+                  color: 'rgba(255,255,255,0.55)',
+                  fontSize: '0.8rem',
+                  py: 0.5,
+                  '&:hover': { borderColor: 'rgba(255,80,80,0.5)', color: '#FF5252', background: 'rgba(255,80,80,0.06)' },
+                }}
+              >
+                로그아웃
+              </Button>
             </>
           ) : (
             <>

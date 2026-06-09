@@ -9,10 +9,11 @@ import AppleIcon from '@mui/icons-material/Apple';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import { signIn } from '../../lib/auth';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { mockLogin } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
@@ -20,9 +21,10 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     if (!email || !password) return;
+    mockLogin(email);
     navigate('/');
   };
 
